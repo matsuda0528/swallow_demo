@@ -1,0 +1,6 @@
+## bundler
+vendor/
+.bundle/
+
+## tmp file
+tmp/
