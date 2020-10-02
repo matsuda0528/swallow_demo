@@ -1,3 +1,8 @@
-#decode(output)
-#decode to json
-#return json path
+class Decode
+  def initialize
+  end
+
+  def decode(output)
+    #NOTE: return json object
+  end
+end
