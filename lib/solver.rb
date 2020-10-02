@@ -1,3 +1,12 @@
-#def call sat solver(cnf_file)
-#system maxsat cnf_file
-#return output file path
+class Solve
+  def initialize
+  end
+
+  def call_qmaxsat(cnf_file)
+    #NOTE: return output file path
+  end
+
+  def call_minisat(cnf_file)
+    #NOTE: return output file path
+  end
+end
