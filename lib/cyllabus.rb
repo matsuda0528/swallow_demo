@@ -1,5 +1,3 @@
-#def parse(cyllabus.csv)
-#return hash or obj
 require "csv"
 
 class Cyllabus
@@ -8,6 +6,10 @@ class Cyllabus
     CSV.foreach(cyllabus_file) do |row|
       @lectures.append(Lecture.new(row))
     end
+  end
+
+  def filter_by_term (term)
+    @lectures.select {|lec| lec.term == term}
   end
 
   class Lecture
