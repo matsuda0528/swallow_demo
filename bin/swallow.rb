@@ -9,9 +9,9 @@ cyllabus = Cyllabus.new("./../src/cyllabus.csv")
 #__FILE__を使えば良さそう
 
 encoder = Encode.new
-cnf_file_path = encoder.generate_cnf(cyllabus.filter_by_term 1)
 solver = Solve.new
-output_file_path = solver.call_qmaxsat(cnf_file_path)
+cnf_file_path = encoder.generate_cnf(cyllabus.filter_by_term 1)
+output_file_path = solver.call_minisat(cnf_file_path)
 decoder = Decode.new
-json = decoder.decode(output_file_path)
+json = decoder.decode(output_file_path,cyllabus.filter_by_term 1)
 #NOTE: print fullcalendar(json)
