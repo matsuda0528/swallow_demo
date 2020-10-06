@@ -8,7 +8,7 @@ class Encode
 
     40.times do |i|#RENAME: 40は時間割のコマ数
       tmp_list = []#RENAME: ある時限に開講されるすべての授業(1 41 81 ..)
-      cyllabus.size.times do |j|
+      cyllabus.list.size.times do |j|
         tmp_list.append (i+1)+j*40
       end
       tmp_list.combination(2).each do |e|
@@ -26,7 +26,7 @@ class Encode
     def initialize(cyllabus)
       @cnf = []
       @clause_count = 0
-      @variabe_count = cyllabus.size * 40#RENAME: 40は時間割のコマ数
+      @variabe_count = cyllabus.list.size * 40#RENAME: 40は時間割のコマ数
     end
 
     def add_clauses (clauses)
