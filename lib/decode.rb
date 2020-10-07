@@ -17,7 +17,7 @@ class Decode
       end
     end
 
-    return cyllabus#NOTE: return json object
+    return cyllabus.to_json#NOTE: return json object
   end
 end
 

@@ -1,4 +1,5 @@
 require "csv"
+require "json"
 
 class Cyllabus
   def initialize(lecs=nil)
@@ -24,6 +25,14 @@ class Cyllabus
     @lectures
   end
 
+  def to_json
+    hash = {}
+    @lectures.each_with_index do |e,i|
+      hash["Lecture#{i}"] = e.to_hash
+    end
+    JSON.generate(hash)
+  end
+
   class Lecture
     attr_reader :id
     attr_reader :name
@@ -39,6 +48,17 @@ class Cyllabus
       @term = lec_info[3].to_i
       @grade = lec_info[4].to_i
       @period = nil
+    end
+
+    def to_hash
+      {
+        :id => @id,
+        :name => @name,
+        :instructors => @instructors,
+        :term => @term,
+        :grade => @grade,
+        :period => @period
+      }
     end
   end
 end
