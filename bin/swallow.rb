@@ -15,3 +15,7 @@ decoder = Decode.new
 cnf_file_path = encoder.generate_cnf(clbs1)#NOTE: ファイルパスでなくファイルオブジェクトを使う
 output_file_path = solver.call_minisat(cnf_file_path)#NOTE: ファイルパスでなくファイルオブジェクトを使う
 json = decoder.decode(output_file_path,clbs1)#NOTE: fullcalendarで扱えるjson形式で出力
+
+File.open("output.json","w") do |f|
+  f.write(json)
+end
