@@ -6,23 +6,24 @@ class Decode
     model = []
     File.open(output,"r") do |f|
       if f.readline.chop == "UNSAT"
-        puts "unsat"#FIXME: エラー処理
+        puts "unsat"#FIXME: エラー処理未実装
       end
       model = f.readline.chop.split.map{|i| i.to_i}
     end
 
     model.each do |e|
       if e > 0
-        cyllabus.text[(e-1)/40].period = e.to_period
+        cyllabus.text[(e-1)/40].period = e.to_period#TODO: デコードをjsでするならいらない
+        cyllabus.text[(e-1)/40].period_id = (e-1)%40#HACK: 求めたピリオド情報0-39
       end
     end
 
-    return cyllabus.to_json#NOTE: return json object
+    return cyllabus.to_json
   end
 end
 
 class Integer
-  def to_period
+  def to_period#TODO: デコードをjsでするならいらない
     period = ""
     self%40 == 0 ? tmp = 40-1 : tmp = self%40-1
     case tmp/8

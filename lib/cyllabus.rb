@@ -40,6 +40,7 @@ class Cyllabus
     attr_reader :term
     attr_reader :grade
     attr_accessor :period
+    attr_accessor :period_id#0-39
 
     def initialize(lec_info)
       @id = lec_info[0]
@@ -48,6 +49,7 @@ class Cyllabus
       @term = lec_info[3].to_i
       @grade = lec_info[4].to_i
       @period = nil
+      @period_id = nil
     end
 
     def to_hash
@@ -57,7 +59,8 @@ class Cyllabus
         :instructors => @instructors,
         :term => @term,
         :grade => @grade,
-        :period => @period
+        :period => @period,
+        :period_id => @period_id
       }
     end
   end
