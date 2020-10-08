@@ -5,3 +5,5 @@ vendor/
 ## tmp file
 tmp/
 output.*
+
+test/
