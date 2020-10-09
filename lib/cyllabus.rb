@@ -17,12 +17,16 @@ class Cyllabus
     end
   end
 
-  def filter_by_term (term)
+  def filter_by_term (term)#NOTE: 今の所不要
     Cyllabus.new(@lectures.select {|lec| lec.term == term})
   end
 
   def list
     @lectures
+  end
+
+  def size
+    @lectures.size
   end
 
   def to_json
