@@ -14,7 +14,7 @@ class Decode
     model.each do |e|
       if e > 0
         cyllabus.list[(e-1)/640].period = e.to_period#TODO: デコードをjsでするならいらない
-        cyllabus.list[(e-1)/640].period_id = (e-1)%640#HACK: 求めたピリオド情報0-39
+        cyllabus.list[(e-1)/640].period_id = (e-1)%640#HACK: 求めたピリオド情報0-時間割コマ数-1
       end
     end
 

@@ -1,13 +1,11 @@
-require 'benchmark'
 class Encode
   def initialize
   end
 
   def generate_cnf(cyllabus)
     @cnf = CNF.new(cyllabus)
-    cnf_file_path = "output.cnf"
+    cnf_file_path = File.expand_path("../../tmp/output.cnf",__FILE__)
 
-    result = Benchmark.realtime do
     #1コマに2つ以上の授業が入らない
     640.times do |i|#RENAME: 40は時間割のコマ数
       tmp_list = []#RENAME: ある時限に開講されるすべての授業(1 41 81 ..)
@@ -23,15 +21,10 @@ class Encode
     cyllabus.size.times do |i|
       @cnf.add_clauses(((640*i)+1...640*(i+1)).to_a)
     end
-    end
-    puts "Generate cnf #{result}s"
 
-    result = Benchmark.realtime do
-    File.open(cnf_file_path,"w") do |f|#FIXME: tmpに出力する
+    File.open(cnf_file_path,"w") do |f|
       f.write(@cnf.cnf_text)
     end
-    end
-    puts "Output cnf file #{result}s"
     return cnf_file_path
   end
 

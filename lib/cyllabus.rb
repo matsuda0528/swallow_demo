@@ -44,7 +44,7 @@ class Cyllabus
     attr_reader :term
     attr_reader :grade
     attr_accessor :period
-    attr_accessor :period_id#0-39
+    attr_accessor :period_id#0-時間割コマ数-1
 
     def initialize(lec_info)
       @id = lec_info[0]

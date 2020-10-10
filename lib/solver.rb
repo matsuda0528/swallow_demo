@@ -7,7 +7,7 @@ class Solve
   end
 
   def call_minisat(cnf_file_path)
-    output_file_path = "output.mdl"#FIXME: tmpに出力する
+    output_file_path = File.expand_path("../../tmp/output.mdl",__FILE__)
     system("minisat #{cnf_file_path} #{output_file_path}")
     return output_file_path
   end
