@@ -7,10 +7,10 @@ class Encode
     cnf_file_path = File.expand_path("../../tmp/output.cnf",__FILE__)
 
     #1コマに2つ以上の授業が入らない
-    640.times do |i|#RENAME: 40は時間割のコマ数
+    TIMETABLESIZE.times do |i|
       tmp_list = []#RENAME: ある時限に開講されるすべての授業(1 41 81 ..)
       cyllabus.size.times do |j|
-        tmp_list.append (i+1)+j*640
+        tmp_list.append (i+1)+j*TIMETABLESIZE
       end
       tmp_list.combination(2).each do |e|
         @cnf.add_clauses(e.map{|l| -1*l})
@@ -19,7 +19,7 @@ class Encode
 
     #各授業は1回以上開催される
     cyllabus.size.times do |i|
-      @cnf.add_clauses(((640*i)+1...640*(i+1)).to_a)
+      @cnf.add_clauses(((TIMETABLESIZE*i)+1...TIMETABLESIZE*(i+1)).to_a)
     end
 
     File.open(cnf_file_path,"w") do |f|
@@ -32,7 +32,7 @@ class Encode
     def initialize(cyllabus)
       @cnf = []
       @clause_count = 0
-      @variabe_count = cyllabus.list.size * 640#RENAME: 40は時間割のコマ数
+      @variabe_count = cyllabus.size * TIMETABLESIZE
     end
 
     def add_clauses (clauses)
@@ -57,7 +57,7 @@ class Encode
     def cnf_text
       str = "p cnf #{@variabe_count} #{@clause_count}\n"
       @cnf.each do |e|
-        str = str << e << "\n"
+        str << e << "\n"
       end
       str
     end

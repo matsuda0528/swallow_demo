@@ -6,7 +6,7 @@ File.open("output.json","r") do |f|
 end
 json = JSON.parse(result.first)
 
-
+#HACK: jsをきれいに
 str = <<-EOS
 <!DOCTYPE html>
 <html lang="ja">

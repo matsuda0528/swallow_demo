@@ -13,8 +13,8 @@ class Decode
 
     model.each do |e|
       if e > 0
-        cyllabus.list[(e-1)/640].period = e.to_period#TODO: デコードをjsでするならいらない
-        cyllabus.list[(e-1)/640].period_id = (e-1)%640#HACK: 求めたピリオド情報0-時間割コマ数-1
+        cyllabus.list[(e-1)/TIMETABLESIZE].period = e.to_period#TODO: デコードをjsでするならいらない
+        cyllabus.list[(e-1)/TIMETABLESIZE].period_id = (e-1)%TIMETABLESIZE#HACK: 求めたピリオド情報0-時間割コマ数-1
       end
     end
 
@@ -25,7 +25,7 @@ end
 class Integer
   def to_period#TODO: デコードをjsでするならいらない
     period = ""
-    self%640 == 0 ? tmp = 640-1 : tmp = self%640-1
+    self%TIMETABLESIZE == 0 ? tmp = TIMETABLESIZE-1 : tmp = self%TIMETABLESIZE-1
     case tmp/8
     when 0
       period += "月"

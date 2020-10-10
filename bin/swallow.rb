@@ -4,6 +4,7 @@ require 'cyllabus'
 require 'encode'
 require 'solver'
 require 'decode'
+TIMETABLESIZE = 640
 cyllabus = Cyllabus.new
 cyllabus.load_from(File.expand_path('../../src/cyllabus.csv',__FILE__))#HACK: Pathnameを使える 
 
