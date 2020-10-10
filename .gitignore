@@ -3,7 +3,6 @@ vendor/
 .bundle/
 
 ## tmp file
-tmp/
 output.*
 
 *.html
