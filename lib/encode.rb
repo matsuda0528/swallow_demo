@@ -8,7 +8,7 @@ class Encode
 
     #1コマに2つ以上の授業が入らない
     TIMETABLESIZE.times do |i|
-      tmp_list = []#RENAME: ある時限に開講されるすべての授業(1 41 81 ..)
+      tmp_list = []
       cyllabus.size.times do |j|
         tmp_list.append (i+1)+j*TIMETABLESIZE
       end
@@ -23,12 +23,12 @@ class Encode
     end
 
     File.open(cnf_file_path,"w") do |f|
-      f.write(@cnf.cnf_text)
+      f.write(@cnf.text)
     end
     return cnf_file_path
   end
 
-  class CNF#NOTE: WCNFクラスを作る
+  class CNF
     def initialize(cyllabus)
       @cnf = []
       @clause_count = 0
@@ -45,6 +45,22 @@ class Encode
       @clause_count += 1
     end
 
+    def text
+      str = "p cnf #{@variabe_count} #{@clause_count}\n"
+      @cnf.each do |e|
+        str << e << "\n"
+      end
+      str
+    end
+  end
+
+  class WCNF
+    def initialize(cyllabus)
+      @cnf = []
+      @clause_count = 0
+      @variabe_count = cyllabus.size * TIMETABLESIZE
+    end
+
     def add_clauses_with_weight (clauses,weight)
       clause = weight.to_s << " "
       clauses.each do |e|
@@ -54,15 +70,7 @@ class Encode
       @cnf.append clause
     end
 
-    def cnf_text
-      str = "p cnf #{@variabe_count} #{@clause_count}\n"
-      @cnf.each do |e|
-        str << e << "\n"
-      end
-      str
-    end
-
-    def wcnf_text
+    def text
     end
   end
 end
