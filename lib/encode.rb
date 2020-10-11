@@ -22,6 +22,15 @@ class Encode
       @cnf.add_clauses(((TIMETABLESIZE*i)+1...TIMETABLESIZE*(i+1)).to_a)
     end
 
+    #対象学年を考慮
+    cyllabus.list.each_with_index do |e,i|
+      TIMETABLESIZE.times do |j|
+        if (j%32)/8+1 != e.grade
+          @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*-1])
+        end
+      end
+    end
+
     File.open(cnf_file_path,"w") do |f|
       f.write(@cnf.text)
     end
