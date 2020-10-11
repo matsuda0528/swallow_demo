@@ -38,19 +38,19 @@ class Encode
     def add_clauses (clauses)
       clause = ""
       clauses.each do |e|
-        clause += e.to_s + " "
+        clause << e.to_s << " "
       end
-      clause += '0'
+      clause << '0'
       @cnf.append clause
       @clause_count += 1
     end
 
     def add_clauses_with_weight (clauses,weight)
-      clause = weight.to_s + " "
+      clause = weight.to_s << " "
       clauses.each do |e|
-        clause += e + " "
+        clause << e << " "
       end
-      clause += '0'
+      clause << '0'
       @cnf.append clause
     end
 
