@@ -39,6 +39,30 @@ class Cyllabus
     @lectures.size
   end
 
+  def all_instructors
+    all_instrctrs = []
+    @lectures.each do |lec|
+      lec.instructors.each do |e|
+        unless all_instrctrs.include? e
+          all_instrctrs.append e
+        end
+      end
+    end
+    all_instrctrs
+  end
+
+  def all_rooms
+    all_rms = []
+    @lectures.each do |lec|
+      lec.rooms.each do |e|
+        unless all_rms.include? e
+          all_rms.append e
+        end
+      end
+    end
+    all_rms
+  end
+
   def to_json
     hash = {}
     @lectures.each_with_index do |e,i|
@@ -82,6 +106,10 @@ class Cyllabus
         :period => @period,
         :period_id => @period_id
       }
+    end
+
+    def include?(elem)
+      @instructors.include?(elem) || @rooms.include?(elem) 
     end
   end
 end

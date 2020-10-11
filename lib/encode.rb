@@ -33,6 +33,18 @@ class Encode
       end
     end
 
+    #先生の重複を考慮
+    cyllabus.all_instructors.each do |instrctr|
+      cyllabus.list.each_with_index do |lec,i|
+      end
+    end
+
+    #教室の重複を考慮
+    cyllabus.all_rooms.each do |rm|
+      cyllabus.list.each_with_index do |lec,i|
+      end
+    end
+
     File.open(cnf_file_path,"w") do |f|
       f.write(@cnf.text)
     end
