@@ -21,6 +21,16 @@ class Cyllabus
     Cyllabus.new(@lectures.select {|lec| lec.term == term})
   end
 
+  def subdivide_by_required_time
+    tmp_lectures = []
+    @lectures.each_with_index do |e,i|
+      e.required_time.times do
+        tmp_lectures.append(e.clone)
+      end
+    end
+    Cyllabus.new(tmp_lectures)
+  end
+
   def list
     @lectures
   end

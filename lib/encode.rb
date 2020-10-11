@@ -7,6 +7,7 @@ class Encode
     cnf_file_path = File.expand_path("../../tmp/output.cnf",__FILE__)
 
     #1コマに2つ以上の授業が入らない
+    #OPTIMIZE: 生成される節が多すぎる，対象学年から省略可能
     TIMETABLESIZE.times do |i|
       tmp_list = []
       cyllabus.size.times do |j|
@@ -16,6 +17,7 @@ class Encode
         @cnf.add_clauses(e.map{|l| -1*l})
       end
     end
+    p @cnf.clause_count
 
     #各授業は1回以上開催される
     cyllabus.size.times do |i|
@@ -26,7 +28,7 @@ class Encode
     cyllabus.list.each_with_index do |e,i|
       TIMETABLESIZE.times do |j|
         if (j%32)/8+1 != e.grade
-          @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*-1])
+          @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*(-1)])
         end
       end
     end
@@ -38,6 +40,7 @@ class Encode
   end
 
   class CNF
+    attr_reader :clause_count#デバッグ用
     def initialize(cyllabus)
       @cnf = []
       @clause_count = 0
