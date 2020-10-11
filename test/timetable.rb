@@ -119,6 +119,9 @@ body = ""
           if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 1){
             td.textContent = json[lec].instructors;
           }
+          if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 2){
+            td.textContent = json[lec].rooms;
+          }
         }
       }
       tr.appendChild(td);

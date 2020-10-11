@@ -54,6 +54,7 @@ class Cyllabus
     attr_reader :term
     attr_reader :grade
     attr_reader :required_time
+    attr_reader :rooms
     attr_accessor :period
     attr_accessor :period_id#0-時間割コマ数-1
 
@@ -64,6 +65,7 @@ class Cyllabus
       @term = lec_info[3].to_i
       @grade = lec_info[4].to_i
       @required_time = lec_info[5].to_i
+      @rooms = lec_info[6].split
       @period = nil
       @period_id = nil
     end
@@ -76,6 +78,7 @@ class Cyllabus
         :term => @term,
         :grade => @grade,
         :required_time => @required_time,
+        :rooms => @rooms,
         :period => @period,
         :period_id => @period_id
       }
