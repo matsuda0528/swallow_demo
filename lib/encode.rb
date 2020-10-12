@@ -98,6 +98,17 @@ class Encode
     #puts "Generated ristriction of classrooms"
     #puts "Total of the clauses"+@cnf.clause_count.to_s
     end
+
+    #水曜の5〜8限は授業なし
+    r.report "Wednessday" do 
+    cyllabus.size.times do |i|
+      4.times do |j|
+        16.times do |k|
+          @cnf.add_clauses([-1*(k+69+(k/4)%4*4+j*160+i*TIMETABLESIZE)])
+        end
+      end
+    end
+    end
     end#Benckmark.bm end
 
     File.open(cnf_file_path,"w") do |f|
