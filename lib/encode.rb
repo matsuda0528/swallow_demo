@@ -17,12 +17,15 @@ class Encode
         @cnf.add_clauses(e.map{|l| -1*l})
       end
     end
-    p @cnf.clause_count
+    puts "Generated ristriction of cells"
+    puts "Total of the clauses"+@cnf.clause_count.to_s
 
     #各授業は1回以上開催される
     cyllabus.size.times do |i|
       @cnf.add_clauses(((TIMETABLESIZE*i)+1...TIMETABLESIZE*(i+1)).to_a)
     end
+    puts "Generated ristriction of class exist"
+    puts "Total of the clauses"+@cnf.clause_count.to_s
 
     #対象学年を考慮
     cyllabus.list.each_with_index do |e,i|
@@ -32,18 +35,57 @@ class Encode
         end
       end
     end
+    puts "Generated ristriction of grade"
+    puts "Total of the clauses"+@cnf.clause_count.to_s
 
     #先生の重複を考慮
     cyllabus.all_instructors.each do |instrctr|
+      tmp_list = []
       cyllabus.list.each_with_index do |lec,i|
+        if lec.include?(instrctr)
+          tmp_list.append(i)
+        end
+      end
+      160.times do |i|
+        tmp_list_2 = []
+        tmp_list.each do |e|
+          tmp_list_2.append((i+1)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+9)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+17)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+25)+(i/8)*24+(TIMETABLESIZE*e))
+        end
+        tmp_list_2.combination(2).each do |e|
+          @cnf.add_clauses(e.map{|l| -1*l})
+        end
       end
     end
+    puts "Generated ristriction of instructors"
+    puts "Total of the clauses"+@cnf.clause_count.to_s
+
 
     #教室の重複を考慮
     cyllabus.all_rooms.each do |rm|
+      tmp_list = []
       cyllabus.list.each_with_index do |lec,i|
+        if lec.include?(rm)
+          tmp_list.append(i)
+        end
+      end
+      160.times do |i|
+        tmp_list_2 = []
+        tmp_list.each do |e|
+          tmp_list_2.append((i+1)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+9)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+17)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+25)+(i/8)*24+(TIMETABLESIZE*e))
+        end
+        tmp_list_2.combination(2).each do |e|
+          @cnf.add_clauses(e.map{|l| -1*l})
+        end
       end
     end
+    puts "Generated ristriction of classrooms"
+    puts "Total of the clauses"+@cnf.clause_count.to_s
 
     File.open(cnf_file_path,"w") do |f|
       f.write(@cnf.text)
