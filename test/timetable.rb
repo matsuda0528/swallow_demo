@@ -117,7 +117,12 @@ body = ""
             td.textContent = json[lec].name;
           }
           if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 1){
-            td.textContent = json[lec].instructors;
+            if(json[lec].instructors.length >= 2){
+              td.textContent = json[lec].instructors[0] + ",他";
+            }
+            else{
+              td.textContent = json[lec].instructors[0];
+            }
           }
           if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 2){
             td.textContent = json[lec].rooms;
