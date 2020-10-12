@@ -111,7 +111,7 @@ body = ""
       if(j==0){
         td.textContent = i%4+1;
       }else{
-        td.textContent = Math.floor((i*24+j-1)/3)+1;
+        //td.textContent = Math.floor((i*24+j-1)/3)+1;
         for(var lec in json){
           if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 0){
             td.textContent = json[lec].name;

@@ -109,6 +109,17 @@ class Encode
       end
     end
     end
+
+    #2学期は必修なし
+    r.report "required in term 2" do
+    cyllabus.list.each_with_index do |lec,i|
+      if lec.required?
+        160.times do |j|
+          @cnf.add_clauses([-1*(161+j+i*TIMETABLESIZE)])
+        end
+      end
+    end
+    end
     end#Benckmark.bm end
 
     File.open(cnf_file_path,"w") do |f|

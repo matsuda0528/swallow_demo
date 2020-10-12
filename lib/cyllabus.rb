@@ -79,6 +79,7 @@ class Cyllabus
     attr_reader :grade
     attr_reader :required_time
     attr_reader :rooms
+    attr_reader :type
     attr_accessor :period
     attr_accessor :period_id#0-時間割コマ数-1
 
@@ -90,6 +91,7 @@ class Cyllabus
       @grade = lec_info[4].to_i
       @required_time = lec_info[5].to_i
       @rooms = lec_info[6].split
+      @type = lec_info[7]
       @period = nil
       @period_id = nil
     end
@@ -103,6 +105,7 @@ class Cyllabus
         :grade => @grade,
         :required_time => @required_time,
         :rooms => @rooms,
+        :type => @type,
         :period => @period,
         :period_id => @period_id
       }
@@ -110,6 +113,10 @@ class Cyllabus
 
     def include?(elem)
       @instructors.include?(elem) || @rooms.include?(elem) 
+    end
+
+    def required?
+      self.type == "必修" or "必修選択"
     end
   end
 end
