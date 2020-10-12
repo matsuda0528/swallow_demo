@@ -99,6 +99,28 @@ class Encode
     #puts "Total of the clauses"+@cnf.clause_count.to_s
     end
 
+    #必修の重複を考慮
+    r.report "required" do
+    tmp_list = []
+    cyllabus.list.each_with_index do |lec,i|
+      if lec.required?
+        tmp_list.append(i)
+      end
+    end
+    160.times do |i|
+      tmp_list_2 = []
+      tmp_list.each do |e|
+          tmp_list_2.append((i+1)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+9)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+17)+(i/8)*24+(TIMETABLESIZE*e))
+          tmp_list_2.append((i+25)+(i/8)*24+(TIMETABLESIZE*e))
+      end
+      tmp_list_2.combination(2).each do |e|
+        @cnf.add_clauses(e.map{|l| -1*l})
+      end
+    end
+    end
+
     #水曜の5〜8限は授業なし
     r.report "Wednessday" do 
     cyllabus.size.times do |i|
