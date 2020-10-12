@@ -1,3 +1,4 @@
+require 'benchmark'
 class Encode
   def initialize
   end
@@ -5,9 +6,11 @@ class Encode
   def generate_cnf(cyllabus)
     @cnf = CNF.new(cyllabus)
     cnf_file_path = File.expand_path("../../tmp/output.cnf",__FILE__)
+    Benchmark.bm 10 do |r|
 
     #1コマに2つ以上の授業が入らない
     #OPTIMIZE: 生成される節が多すぎる，対象学年から省略可能
+    r.report "cells" do
     TIMETABLESIZE.times do |i|
       tmp_list = []
       cyllabus.size.times do |j|
@@ -17,17 +20,21 @@ class Encode
         @cnf.add_clauses(e.map{|l| -1*l})
       end
     end
-    puts "Generated ristriction of cells"
-    puts "Total of the clauses"+@cnf.clause_count.to_s
+    #puts "Generated ristriction of cells"
+    #puts "Total of the clauses"+@cnf.clause_count.to_s
+    end
 
     #各授業は1回以上開催される
+    r.report "class exist" do
     cyllabus.size.times do |i|
       @cnf.add_clauses(((TIMETABLESIZE*i)+1...TIMETABLESIZE*(i+1)).to_a)
     end
-    puts "Generated ristriction of class exist"
-    puts "Total of the clauses"+@cnf.clause_count.to_s
+    #puts "Generated ristriction of class exist"
+    #puts "Total of the clauses"+@cnf.clause_count.to_s
+    end
 
     #対象学年を考慮
+    r.report "grade" do
     cyllabus.list.each_with_index do |e,i|
       TIMETABLESIZE.times do |j|
         if (j%32)/8+1 != e.grade
@@ -35,10 +42,12 @@ class Encode
         end
       end
     end
-    puts "Generated ristriction of grade"
-    puts "Total of the clauses"+@cnf.clause_count.to_s
+    #puts "Generated ristriction of grade"
+    #puts "Total of the clauses"+@cnf.clause_count.to_s
+    end
 
     #先生の重複を考慮
+    r.report "instructors" do
     cyllabus.all_instructors.each do |instrctr|
       tmp_list = []
       cyllabus.list.each_with_index do |lec,i|
@@ -59,11 +68,13 @@ class Encode
         end
       end
     end
-    puts "Generated ristriction of instructors"
-    puts "Total of the clauses"+@cnf.clause_count.to_s
+    #puts "Generated ristriction of instructors"
+    #puts "Total of the clauses"+@cnf.clause_count.to_s
+    end
 
 
     #教室の重複を考慮
+    r.report "classroom" do
     cyllabus.all_rooms.each do |rm|
       tmp_list = []
       cyllabus.list.each_with_index do |lec,i|
@@ -84,8 +95,10 @@ class Encode
         end
       end
     end
-    puts "Generated ristriction of classrooms"
-    puts "Total of the clauses"+@cnf.clause_count.to_s
+    #puts "Generated ristriction of classrooms"
+    #puts "Total of the clauses"+@cnf.clause_count.to_s
+    end
+    end#Benckmark.bm end
 
     File.open(cnf_file_path,"w") do |f|
       f.write(@cnf.text)
