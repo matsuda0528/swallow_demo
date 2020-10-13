@@ -1,13 +1,12 @@
 require 'json'
 
 result = ""
-File.open("output.json","r") do |f|
-  result = f.readlines
+File.open("output.json","r") do |f| result = f.readlines
 end
 json = JSON.parse(result.first)
 
 #HACK: jsをきれいに
-head = <<-EOS
+top = <<-EOS
 <!DOCTYPE html>
 <html lang="ja">
   <head>
@@ -123,9 +122,11 @@ body = ""
             else{
               td.textContent = json[lec].instructors[0];
             }
+            json[lec].instructors.map(ins => td.classList.add(ins));
           }
           if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 2){
             td.textContent = json[lec].rooms;
+            json[lec].rooms.map(rm => td.classList.add(rm));
           }
         }
       }
@@ -137,11 +138,23 @@ body = ""
 EOS
 end
 
-last = <<-EOS
+bottom = <<-EOS
+  <form action='' method='get' name='search_form'>
+    <input type='text' name='search'>
+    <input type='submit' value='検索' onClick='highlight();return false;'>
+  </form>
+  <button id='reload' onClick='location.reload();'>リセット</button>
+  <script>
+    function highlight(){
+      var elements = document.getElementsByClassName(search_form.search.value);
+      for(var i=0; i<elements.length; i++){
+        elements[i].style.color = 'red';
+      }
+    }
+  </script>
   </body>
 </html>
 EOS
 
 File.open("index.html","w") do |f|
-  f.write(head + body + last)
-end
+  f.write(top + body + bottom) end
