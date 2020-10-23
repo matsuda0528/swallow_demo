@@ -150,6 +150,10 @@ class Encode
     return cnf_file_path
   end
 
+  def generate_csp(cyllabus)
+
+  end
+
   class CNF
     attr_reader :clause_count#デバッグ用
     def initialize(cyllabus)
