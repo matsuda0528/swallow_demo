@@ -11,4 +11,11 @@ class Solve
     system("minisat #{cnf_file_path} #{output_file_path}")
     return output_file_path
   end
+
+  def call_sugar(csp_file_path)
+    output_file_path = File.expand_path("../../tmp/output.mdl",__FILE__)
+    p csp_file_path
+    system("sugar #{csp_file_path} > #{output_file_path}")
+    return output_file_path
+  end
 end

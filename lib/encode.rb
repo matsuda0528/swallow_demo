@@ -150,6 +150,13 @@ class Encode
     return cnf_file_path
   end
 
+  def generate_csp(cyllabus)
+    @cnf = CNF.new(cyllabus)
+    csp_file_path = File.expand_path("../../tmp/output.csp",__FILE__)
+
+    return csp_file_path
+  end
+
   class CNF
     attr_reader :clause_count#デバッグ用
     def initialize(cyllabus)

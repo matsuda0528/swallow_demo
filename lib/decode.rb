@@ -20,6 +20,10 @@ class Decode
 
     return cyllabus.to_json
   end
+
+  def decode_csp(output,cyllabus)
+
+  end
 end
 
 class Integer
