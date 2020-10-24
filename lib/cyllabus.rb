@@ -82,6 +82,7 @@ class Cyllabus
     attr_reader :type
     attr_accessor :period
     attr_accessor :period_id#0-時間割コマ数-1
+    attr_accessor :availables
 
     def initialize(lec_info)
       @id = lec_info[0]
@@ -94,6 +95,7 @@ class Cyllabus
       @type = lec_info[7]
       @period = nil
       @period_id = nil
+      @availables = (1..640).to_a
     end
 
     def to_hash
@@ -112,7 +114,7 @@ class Cyllabus
     end
 
     def include?(elem)
-      @instructors.include?(elem) || @rooms.include?(elem) 
+      @instructors.include?(elem) || @rooms.include?(elem)
     end
 
     def required?

@@ -4,7 +4,7 @@ class Decode
 
   def decode(output,cyllabus)
     model = []
-    File.open(output,"r") do |f|
+    File.open(output,"r") do |f| #FIXME: .mdlファイルが生成されなかった時の処理
       if f.readline.chop == "UNSAT"
         puts "unsat"#FIXME: エラー処理未実装
       end
@@ -56,7 +56,7 @@ class Integer
       period += "5"
     when 5
       period += "6"
-    when 6 
+    when 6
       period += "7"
     when 7
       period += "8"
