@@ -112,10 +112,10 @@ body = ""
       }else{
         //td.textContent = Math.floor((i*24+j-1)/3)+1;
         for(var lec in json){
-          if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 0){
+          if(json[lec].period_id == Math.floor((i*24+j-1)/6) && (i*24+j-1)%3 == 0){
             td.textContent = json[lec].name;
           }
-          if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 1){
+          if(json[lec].period_id == Math.floor((i*24+j-1)/6) && (i*24+j-1)%3 == 1){
             if(json[lec].instructors.length >= 2){
               td.textContent = json[lec].instructors[0] + ",他";
             }
@@ -124,7 +124,7 @@ body = ""
             }
             json[lec].instructors.map(ins => td.classList.add(ins));
           }
-          if(json[lec].period_id == Math.floor((i*24+j-1)/3) && (i*24+j-1)%3 == 2){
+          if(json[lec].period_id == Math.floor((i*24+j-1)/6) && (i*24+j-1)%3 == 2){
             td.textContent = json[lec].rooms;
             json[lec].rooms.map(rm => td.classList.add(rm));
           }

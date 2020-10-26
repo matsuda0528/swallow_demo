@@ -12,7 +12,7 @@ class Encode
       r.report "grade" do
         cyllabus.list.each_with_index do |lec,i|
           TIMETABLESIZE.times do |j|
-            if (j%32)/8+1 != lec.grade
+            if (j%16)/4+1 != lec.grade
               @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*(-1)])
               lec.availables[j] = nil
             end
@@ -23,12 +23,13 @@ class Encode
       end
 
       #水曜の5〜8限は授業なし
+      #まだやっていない
       r.report "Wednessday" do
         cyllabus.list.each_with_index do |lec,i|
           4.times do |j|
-            16.times do |k|
-              @cnf.add_clauses([-1*(k+69+(k/4)%4*4+j*160+i*TIMETABLESIZE)])
-              lec.availables[k+68+(k/4)%4*4+j*160] =nil
+            8.times do |k|
+              @cnf.add_clauses([-1*(k+35+(k/2)%4*2+j*80+i*TIMETABLESIZE)])
+              lec.availables[k+34+(k/2)%4*2+j*80] =nil
             end
           end
         end
@@ -38,9 +39,9 @@ class Encode
       r.report "term 2" do
         cyllabus.list.each_with_index do |lec,i|
           if lec.required? and lec.grade == 3
-            160.times do |j|
-              @cnf.add_clauses([-1*(161+j+i*TIMETABLESIZE)])
-              lec.availables[160+j] = nil
+            80.times do |j|
+              @cnf.add_clauses([-1*(81+j+i*TIMETABLESIZE)])
+              lec.availables[80+j] = nil
             end
           end
         end
@@ -99,12 +100,12 @@ class Encode
               tmp_list.append(i)
             end
           end
-          160.times do |i|
+          80.times do |i|
             tmp_list_2 = []
             4.times do |j|
               tmp_list.each do |e|
-                next if cyllabus.list[e].availables[i+j*8+(i/8)*24] == nil
-                tmp_list_2.append((i+j*8+1)+(i/8)*24+(TIMETABLESIZE*e))
+                next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
+                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
               end
               tmp_list_2.combination(2).each do |e|
                 @cnf.add_clauses(e.map{|l| -1*l})
@@ -126,12 +127,12 @@ class Encode
               tmp_list.append(i)
             end
           end
-          160.times do |i|
+          80.times do |i|
             tmp_list_2 = []
             4.times do |j|
               tmp_list.each do |e|
-                next if cyllabus.list[e].availables[i+j*8+(i/8)*24] == nil
-                tmp_list_2.append((i+j*8+1)+(i/8)*24+(TIMETABLESIZE*e))
+                next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
+                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
               end
               tmp_list_2.combination(2).each do |e|
                 @cnf.add_clauses(e.map{|l| -1*l})

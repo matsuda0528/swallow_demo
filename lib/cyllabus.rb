@@ -24,7 +24,7 @@ class Cyllabus
   def subdivide_by_required_time
     tmp_lectures = []
     @lectures.each_with_index do |e,i|
-      e.required_time.times do
+      ((e.required_time+1)/2).times do
         tmp_lectures.append(e.clone)
       end
     end
@@ -95,7 +95,7 @@ class Cyllabus
       @type = lec_info[7]
       @period = nil
       @period_id = nil
-      @availables = (1..640).to_a
+      @availables = (1..320).to_a
     end
 
     def to_hash
