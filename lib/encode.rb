@@ -23,7 +23,6 @@ class Encode
       end
 
       #水曜の5〜8限は授業なし
-      #まだやっていない
       r.report "Wednessday" do
         cyllabus.list.each_with_index do |lec,i|
           4.times do |j|
@@ -34,6 +33,18 @@ class Encode
           end
         end
       end
+
+      #その他授業なし(教養必修のため)
+      r.report "buried" do
+        buried_list = [1,3,23,33,49,50,65,81,83,103,129,130,163,183,210,211,234,243,263,289,]#1~TIMETABLESIZE
+        cyllabus.list.each_with_index do |lec,i|
+          buried_list.each do |e|
+            @cnf.add_clauses([-1*(e+i*TIMETABLESIZE)])
+            lec.availables[e-1] =nil
+          end
+        end
+      end
+
 
       #3年2学期は必修なし
       r.report "term 2" do
