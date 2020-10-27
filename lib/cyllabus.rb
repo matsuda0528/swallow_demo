@@ -15,6 +15,7 @@ class Cyllabus
     CSV.foreach(cyllabus_file) do |row|
       @lectures.append(Lecture.new(row))
     end
+    @lectures.shift
   end
 
   def filter_by_term (term)#NOTE: 今の所不要
