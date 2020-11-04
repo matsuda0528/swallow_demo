@@ -119,7 +119,7 @@ class Cyllabus
     end
 
     def required?
-      self.type == "必修" or "必修選択"
+      self.type == "必修" or self.type == "必修選択"
     end
   end
 end

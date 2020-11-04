@@ -7,6 +7,7 @@ class Decode
     File.open(output,"r") do |f| #FIXME: .mdlファイルが生成されなかった時の処理
       if f.readline.chop == "UNSAT"
         puts "unsat"#FIXME: エラー処理未実装
+        exit
       end
       model = f.readline.chop.split.map{|i| i.to_i}
     end

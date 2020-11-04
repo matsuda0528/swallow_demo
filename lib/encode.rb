@@ -22,6 +22,18 @@ class Encode
         #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
+      #開催学期を考慮
+      r.report "term" do
+        cyllabus.list.each_with_index do |lec,i|
+          TIMETABLESIZE.times do |j|
+            if j/80+1 != lec.term
+              @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*(-1)])
+              lec.availables[j] = nil
+            end
+          end
+        end
+      end
+
       #水曜の5〜8限は授業なし
       r.report "Wednessday" do
         cyllabus.list.each_with_index do |lec,i|
@@ -206,6 +218,7 @@ class Encode
       clause << '0'
       @cnf.append clause
       @clause_count += 1
+      clause
     end
 
     def text
