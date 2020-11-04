@@ -167,27 +167,29 @@ class Encode
         #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
-      #必修の重複を考慮
-      #r.report "required" do
-      #  tmp_list = []
-      #  cyllabus.list.each_with_index do |lec,i|
-      #    if lec.required?
-      #      tmp_list.append(i)
-      #    end
-      #  end
-      #  160.times do |i|
-      #    tmp_list_2 = []
-      #    4.times do |j|
-      #      tmp_list.each do |e|
-      #        next if cyllabus.list[e].availables[i+j*8+(i/8)*24] == nil
-      #        tmp_list_2.append((i+j*8+1)+(i/8)*24+(TIMETABLESIZE*e))
-      #      end
-      #      tmp_list_2.combination(2).each do |e|
-      #        @cnf.add_clauses(e.map{|l| -1*l})
-      #      end
-      #    end
-      #  end
-      #end
+      #1学期以外の必修の重複を考慮
+      #XXX: 1学期の必修問題は解けない
+      r.report "required" do
+        tmp_list = []
+        cyllabus.list.each_with_index do |lec,i|
+          if lec.required?
+            tmp_list.append(i)
+          end
+        end
+        80.times do |i|
+          next if i < 20
+          tmp_list_2 = []
+          4.times do |j|
+            tmp_list.each do |e|
+              next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
+              tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
+            end
+            tmp_list_2.combination(2).each do |e|
+              @cnf.add_clauses(e.map{|l| -1*l})
+            end
+          end
+        end
+      end
 
     end#Benckmark.bm end
 
