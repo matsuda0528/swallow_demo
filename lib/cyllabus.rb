@@ -2,11 +2,13 @@ require "csv"
 require "json"
 
 class Cyllabus
+  attr_reader :continuous_lectures
   def initialize(lecs=nil)
     @lectures = []
+    @continuous_lectures = []
     if lecs
-      lecs.each do |e|
-        @lectures.append(e)
+      lecs.each do |lec|
+        @lectures.append(lec)
       end
     end
   end
@@ -29,7 +31,26 @@ class Cyllabus
         tmp_lectures.append(e.clone)
       end
     end
-    Cyllabus.new(tmp_lectures)
+    @lectures = tmp_lectures
+  end
+
+  def generate_continuous_lectures
+    tmp = []
+    flag = 0
+    @lectures.each do |lec|
+      if flag == 1
+        tmp.append lec
+        @continuous_lectures.append tmp
+        tmp = []
+        flag = 0
+        next
+      end
+
+      if (lec.continuous+1)/2 == 2
+        tmp.append lec
+        flag = 1
+      end
+    end
   end
 
   def set_inner_id
@@ -87,6 +108,7 @@ class Cyllabus
     attr_reader :required_time
     attr_reader :rooms
     attr_reader :type
+    attr_reader :continuous
     attr_accessor :period
     attr_accessor :period_id#0-時間割コマ数-1
     attr_accessor :availables
@@ -101,6 +123,7 @@ class Cyllabus
       @required_time = lec_info[5].to_i
       @rooms = lec_info[6].split
       @type = lec_info[7]
+      @continuous = lec_info[8].to_i
       @period = nil
       @period_id = nil
       @availables = (1..320).to_a
@@ -112,8 +135,6 @@ class Cyllabus
         :id => @id,
         :name => @name,
         :instructors => @instructors,
-        :term => @term,
-        :grade => @grade,
         :required_time => @required_time,
         :rooms => @rooms,
         :type => @type,

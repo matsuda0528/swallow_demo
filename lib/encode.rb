@@ -101,6 +101,23 @@ class Encode
         end
       end
 
+      # 授業の連続性を考慮
+      cyllabus.continuous_lectures.each do |lecs|
+        p lecs.map{|e| e.inner_id}
+        TIMETABLESIZE.times do |i|
+          if i%4 == 3
+            @cnf.add_literal(-1*((i+1)+(TIMETABLESIZE*lecs[0].inner_id)))
+            lecs[0].availables[i] = nil
+          end
+          if i%4 == 0
+            @cnf.add_literal(-1*((i+1)+(TIMETABLESIZE*lecs[1].inner_id)))
+            lecs[1].availables[i] = nil
+          end
+          # next if lecs[0].availables[i] == nil or lecs[1].availables[i+1] == nil
+          # XXX: 上記のコメントを外すと制約を満たさない(理由不明)
+          @cnf.add_clauses([-1*((i+1)+(TIMETABLESIZE*lecs[0].inner_id)),(i+2)+(TIMETABLESIZE*lecs[1].inner_id)])
+        end
+      end
 
       #先生の重複を考慮
       r.report "instructors" do
@@ -169,6 +186,7 @@ class Encode
         end
       end
 
+
     end#Benckmark.bm end
 
     File.open(cnf_file_path,"w") do |f|
@@ -186,16 +204,16 @@ class Encode
       @variabe_count = cyllabus.size * TIMETABLESIZE
     end
 
-    # def add_clauses (clauses)
-    #   clause = ""
-    #   clauses.each do |e|
-    #     clause << e.to_s << " "
-    #   end
-    #   clause << '0'
-    #   @cnf.append clause
-    #   @clause_count += 1
-    #   clause
-    # end
+    def add_clauses (clauses)
+      clause = ""
+      clauses.each do |e|
+        clause << e.to_s << " "
+      end
+      clause << '0'
+      @cnf.append clause
+      @clause_count += 1
+      clause
+    end
 
     def add_literal (literal)
       clause = literal.to_s << " " << "0"
