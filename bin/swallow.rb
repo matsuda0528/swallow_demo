@@ -8,6 +8,7 @@ TIMETABLESIZE = 320
 cyllabus = Cyllabus.new
 cyllabus.load_from(File.expand_path('../../src/cyllabus.csv',__FILE__))#HACK: Pathnameを使える
 cyllabus = cyllabus.subdivide_by_required_time
+cyllabus.set_inner_id
 
 encoder = Encode.new
 solver = Solve.new

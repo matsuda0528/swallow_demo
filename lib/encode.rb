@@ -13,13 +13,11 @@ class Encode
         cyllabus.list.each_with_index do |lec,i|
           TIMETABLESIZE.times do |j|
             if (j%16)/4+1 != lec.grade
-              @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*(-1)])
+              @cnf.add_literal(((j+1)+lec.inner_id*TIMETABLESIZE)*(-1))
               lec.availables[j] = nil
             end
           end
         end
-        #puts "Generated ristriction of grade"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
       #開催学期を考慮
@@ -27,7 +25,7 @@ class Encode
         cyllabus.list.each_with_index do |lec,i|
           TIMETABLESIZE.times do |j|
             if j/80+1 != lec.term
-              @cnf.add_clauses([((j+1)+i*TIMETABLESIZE)*(-1)])
+              @cnf.add_literal(((j+1)+lec.inner_id*TIMETABLESIZE)*(-1))
               lec.availables[j] = nil
             end
           end
@@ -39,7 +37,7 @@ class Encode
         cyllabus.list.each_with_index do |lec,i|
           4.times do |j|
             8.times do |k|
-              @cnf.add_clauses([-1*(k+35+(k/2)%4*2+j*80+i*TIMETABLESIZE)])
+              @cnf.add_literal(-1*(k+35+(k/2)%4*2+j*80+lec.inner_id*TIMETABLESIZE))
               lec.availables[k+34+(k/2)%4*2+j*80] =nil
             end
           end
@@ -51,7 +49,7 @@ class Encode
         buried_list = [1,3,23,33,49,50,65,81,83,103,129,130,163,183,210,211,234,243,263,289,]#1~TIMETABLESIZE
         cyllabus.list.each_with_index do |lec,i|
           buried_list.each do |e|
-            @cnf.add_clauses([-1*(e+i*TIMETABLESIZE)])
+            @cnf.add_literal(-1*(e+lec.inner_id*TIMETABLESIZE))
             lec.availables[e-1] =nil
           end
         end
@@ -63,7 +61,7 @@ class Encode
         cyllabus.list.each_with_index do |lec,i|
           if lec.required? and lec.grade == 3
             80.times do |j|
-              @cnf.add_clauses([-1*(81+j+i*TIMETABLESIZE)])
+              @cnf.add_literal(-1*(81+j+lec.inner_id*TIMETABLESIZE))
               lec.availables[80+j] = nil
             end
           end
@@ -73,44 +71,34 @@ class Encode
       #1コマに2つ以上の授業が入らない
       r.report "cells" do
         TIMETABLESIZE.times do |i|
-          tmp_list = []
+          literal_set = []
           cyllabus.list.each_with_index do |lec,j|
             if lec.availables[i]
-              tmp_list.append (i+1)+j*TIMETABLESIZE
+              literal_set.append (i+1)+lec.inner_id*TIMETABLESIZE
             end
           end
-          tmp_list.combination(2).each do |e|
-            @cnf.add_clauses(e.map{|l| -1*l})
-          end
+          @cnf.add_amo(literal_set)
         end
-        #puts "Generated ristriction of cells"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
       #各授業はたかだか一回開催される
       r.report "class" do
         cyllabus.list.each_with_index do |lec,i|
-          tmp_list = []
+          literal_set = []
           lec.availables.each do |j|
             if(j)
-              tmp_list.append (j+1)+i*TIMETABLESIZE
+              literal_set.append (j+1)+lec.inner_id*TIMETABLESIZE
             end
           end
-          tmp_list.combination(2).each do |e|
-            @cnf.add_clauses(e.map{|l| -1*l})
-          end
+          @cnf.add_amo(literal_set)
         end
-        #puts "Generated ristriction of cells"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
       #各授業は1回以上開催される
       r.report "class exist" do
-        cyllabus.size.times do |i|
-          @cnf.add_clauses(((TIMETABLESIZE*i)+1...TIMETABLESIZE*(i+1)).to_a)
+        cyllabus.list.each_with_index do |lec,i|
+          @cnf.add_alo(((TIMETABLESIZE*lec.inner_id)+1...TIMETABLESIZE*(lec.inner_id+1)).to_a)
         end
-        #puts "Generated ristriction of class exist"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
 
@@ -120,24 +108,20 @@ class Encode
           tmp_list = []
           cyllabus.list.each_with_index do |lec,i|
             if lec.include?(instrctr)
-              tmp_list.append(i)
+              tmp_list.append(lec)
             end
           end
           80.times do |i|
             tmp_list_2 = []
             4.times do |j|
-              tmp_list.each do |e|
-                next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
-                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
+              tmp_list.each do |lec|
+                next if cyllabus.list[lec.inner_id].availables[i+j*4+(i/4)*12] == nil
+                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*lec.inner_id))
               end
-              tmp_list_2.combination(2).each do |e|
-                @cnf.add_clauses(e.map{|l| -1*l})
-              end
+              @cnf.add_amo(tmp_list_2)
             end
           end
         end
-        #puts "Generated ristriction of instructors"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
 
@@ -147,24 +131,20 @@ class Encode
           tmp_list = []
           cyllabus.list.each_with_index do |lec,i|
             if lec.include?(rm)
-              tmp_list.append(i)
+              tmp_list.append(lec)
             end
           end
           80.times do |i|
             tmp_list_2 = []
             4.times do |j|
-              tmp_list.each do |e|
-                next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
-                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
+              tmp_list.each do |lec|
+                next if cyllabus.list[lec.inner_id].availables[i+j*4+(i/4)*12] == nil
+                tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*lec.inner_id))
               end
-              tmp_list_2.combination(2).each do |e|
-                @cnf.add_clauses(e.map{|l| -1*l})
-              end
+              @cnf.add_amo(tmp_list_2)
             end
           end
         end
-        #puts "Generated ristriction of classrooms"
-        #puts "Total of the clauses"+@cnf.clause_count.to_s
       end
 
       #1学期以外の必修の重複を考慮
@@ -173,20 +153,18 @@ class Encode
         tmp_list = []
         cyllabus.list.each_with_index do |lec,i|
           if lec.required?
-            tmp_list.append(i)
+            tmp_list.append(lec)
           end
         end
         80.times do |i|
           next if i < 20
           tmp_list_2 = []
           4.times do |j|
-            tmp_list.each do |e|
-              next if cyllabus.list[e].availables[i+j*4+(i/4)*12] == nil
-              tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*e))
+            tmp_list.each do |lec|
+              next if cyllabus.list[lec.inner_id].availables[i+j*4+(i/4)*12] == nil
+              tmp_list_2.append((i+j*4+1)+(i/4)*12+(TIMETABLESIZE*lec.inner_id))
             end
-            tmp_list_2.combination(2).each do |e|
-              @cnf.add_clauses(e.map{|l| -1*l})
-            end
+            @cnf.add_amo(tmp_list_2)
           end
         end
       end
@@ -200,10 +178,6 @@ class Encode
     return cnf_file_path
   end
 
-  def generate_csp(cyllabus)
-
-  end
-
   class CNF
     attr_reader :clause_count#デバッグ用
     def initialize(cyllabus)
@@ -212,15 +186,39 @@ class Encode
       @variabe_count = cyllabus.size * TIMETABLESIZE
     end
 
-    def add_clauses (clauses)
-      clause = ""
-      clauses.each do |e|
-        clause << e.to_s << " "
-      end
-      clause << '0'
+    # def add_clauses (clauses)
+    #   clause = ""
+    #   clauses.each do |e|
+    #     clause << e.to_s << " "
+    #   end
+    #   clause << '0'
+    #   @cnf.append clause
+    #   @clause_count += 1
+    #   clause
+    # end
+
+    def add_literal (literal)
+      clause = literal.to_s << " " << "0"
       @cnf.append clause
       @clause_count += 1
-      clause
+    end
+
+    def add_amo (literals)
+      literals.combination(2).each do |l|
+        clause = (-1*l[0]).to_s << " " << (-1*l[1]).to_s << " " << "0"
+        @cnf.append clause
+        @clause_count += 1
+      end
+    end
+
+    def add_alo (literals)
+      clause = ""
+      literals.each do |l|
+        clause << l.to_s << " "
+      end
+      clause << "0"
+      @cnf.append clause
+      @clause_count += 1
     end
 
     def text

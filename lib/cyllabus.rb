@@ -32,6 +32,12 @@ class Cyllabus
     Cyllabus.new(tmp_lectures)
   end
 
+  def set_inner_id
+    @lectures.each_with_index do |lec,id|
+      lec.inner_id = id
+    end
+  end
+
   def list
     @lectures
   end
@@ -84,6 +90,7 @@ class Cyllabus
     attr_accessor :period
     attr_accessor :period_id#0-時間割コマ数-1
     attr_accessor :availables
+    attr_accessor :inner_id
 
     def initialize(lec_info)
       @id = lec_info[0]
@@ -97,6 +104,7 @@ class Cyllabus
       @period = nil
       @period_id = nil
       @availables = (1..320).to_a
+      @inner_id = 0
     end
 
     def to_hash
