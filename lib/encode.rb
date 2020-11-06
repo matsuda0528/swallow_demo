@@ -102,8 +102,8 @@ class Encode
       end
 
       # 授業の連続性を考慮
+      # HACK: 不要な節が多い
       cyllabus.continuous_lectures.each do |lecs|
-        p lecs.map{|e| e.inner_id}
         TIMETABLESIZE.times do |i|
           if i%4 == 3
             @cnf.add_literal(-1*((i+1)+(TIMETABLESIZE*lecs[0].inner_id)))
@@ -116,6 +116,21 @@ class Encode
           # next if lecs[0].availables[i] == nil or lecs[1].availables[i+1] == nil
           # XXX: 上記のコメントを外すと制約を満たさない(理由不明)
           @cnf.add_clauses([-1*((i+1)+(TIMETABLESIZE*lecs[0].inner_id)),(i+2)+(TIMETABLESIZE*lecs[1].inner_id)])
+        end
+      end
+
+      # 授業の不連続性を考慮
+      # HACK: 不要な節が多い
+      cyllabus.discontinuous_lectures.each do |lecs|
+        TIMETABLESIZE.times do |i|
+          #next if lecs[0].availables[i] == nil
+          # XXX: 上記のコメントを外すと制約を満たさない(理由不明)
+          tmp = (((i+32)+TIMETABLESIZE*lecs[1].inner_id)..((i+80)+TIMETABLESIZE*lecs[1].inner_id)).to_a
+          # HACK: 上記の数値は適当
+          @cnf.add_clauses([-1*((i+1)+TIMETABLESIZE*lecs[0].inner_id)]+tmp)
+          # 32.times do |j|
+          #   @cnf.add_clauses([-1*((i+1)+(TIMETABLESIZE*lecs[0].inner_id)),-1*((i+j+2)+(TIMETABLESIZE*lecs[1].inner_id))])
+          # end
         end
       end
 

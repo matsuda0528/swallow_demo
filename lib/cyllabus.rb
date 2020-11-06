@@ -3,9 +3,11 @@ require "json"
 
 class Cyllabus
   attr_reader :continuous_lectures
+  attr_reader :discontinuous_lectures
   def initialize(lecs=nil)
     @lectures = []
     @continuous_lectures = []
+    @discontinuous_lectures = []
     if lecs
       lecs.each do |lec|
         @lectures.append(lec)
@@ -36,19 +38,41 @@ class Cyllabus
 
   def generate_continuous_lectures
     tmp = []
-    flag = 0
+    continuous_flag = 0
+    discontinuous_flag = 0
+    flagflag = 0
     @lectures.each do |lec|
-      if flag == 1
+      if continuous_flag == 1
         tmp.append lec
         @continuous_lectures.append tmp
         tmp = []
-        flag = 0
+        continuous_flag = 0
+        if lec.required_time == 8 and flagflag == 0
+          tmp.append lec
+          discontinuous_flag = 1
+          flagflag = 1
+        else
+          flagflag = 0
+        end
         next
+      end
+
+      if discontinuous_flag == 1
+        tmp.append lec
+        @discontinuous_lectures.append tmp
+        tmp = []
+        discontinuous_flag = 0
+        next if flagflag == 0
       end
 
       if (lec.continuous+1)/2 == 2
         tmp.append lec
-        flag = 1
+        continuous_flag = 1
+      end
+
+      if (lec.continuous+1)/2 == 1 and lec.required_time >= 4
+        tmp.append lec
+        discontinuous_flag = 1
       end
     end
   end
