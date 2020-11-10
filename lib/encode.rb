@@ -44,6 +44,16 @@ class Encode
         end
       end
 
+      # 7,8限は授業なし
+      cyllabus.list.each_with_index do |lec,i|
+        TIMETABLESIZE.times do |j|
+          if j%4==3
+            @cnf.add_literal(-1*(j+1+lec.inner_id*TIMETABLESIZE))
+            lec.availables[j]=nil
+          end
+        end
+      end
+
       #その他授業なし(教養必修のため)
       r.report "buried" do
         buried_list = [1,3,23,33,49,50,65,81,83,103,129,130,163,183,210,211,234,243,263,289,]#1~TIMETABLESIZE
