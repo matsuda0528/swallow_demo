@@ -22,27 +22,37 @@ $ swallow.sh show
 ```
 
 ## DSLの記述
-
+swallowの入力ファイルの記述方法を示す．
 ```
-time do
-  nr_grades 学年数
-  nr_terms 1学年の学期数
-  nr_days 1週間の授業日数
+initialization do
+  nr_terms 1年間の学期数
   nr_periods 1日の時限数
 end
 
+periods do
+  first start_time: "1時限目の開始時刻", end_time:"1時限目の終了時刻"
+  second start_time: "2時限目の開始時刻", end_time:"2時限目の終了時刻"
+  ...
+end
+
+holiday do
+  holiday "休校日"
+end
+
 room "教室名" do
-  time (学年,学期,曜日,時限)
+  unavailable start_time: "利用不可時間の開始時刻", end_time: "利用不可時間の終了時刻"
+  unavailable all_day: "利用不可日（終日）"
 end
 
 instructor "教員名" do
-  time (学年,学期,曜日,時限)
+  unavailable start_time: "利用不可時間の開始時刻", end_time: "利用不可時間の終了時刻"
+  unavailable all_day: "利用不可日（終日）"
 end
 
 lecture "授業名" do
-  time (学年,学期,曜日,時限)
-  room (教室名)
-  instructor (教員名)
+  room (開催可能教室名)
+  instructor (担当可能教員名)
+  time #検討中
 end
 
 一般制約名 do
@@ -50,7 +60,7 @@ end
 end
 ```
 
-一般制約
+一般制約(チェックがついているものが実装済み)
 - [ ] same_start
 - [ ] same_time
 - [ ] different_time
