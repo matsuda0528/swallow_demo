@@ -123,6 +123,14 @@ class Cyllabus
     JSON.generate(hash)
   end
 
+  def to_csv
+    csv = ""
+    @lectures.each_with_index do |e,i|
+      csv << "#{e.id}, #{e.name}, #{e.instructors}, #{e.term}, #{e.grade}, #{e.required_time}, #{e.rooms}, #{e.type}, #{e.continuous}, #{e.period}\n"
+    end
+    csv
+  end
+
   class Lecture
     attr_reader :id
     attr_reader :name

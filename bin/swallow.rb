@@ -19,6 +19,12 @@ cnf_file_path = encoder.generate_cnf(cyllabus)
 output_file_path = solver.call_minisat(cnf_file_path)
 json = decoder.decode(output_file_path,cyllabus)#NOTE: fullcalendarで扱えるjson形式で出力
 
+csv = decoder.decode_to_csv(output_file_path, cyllabus)#NOTE: demo
+
 File.open(File.expand_path("../../tmp/output.json",__FILE__),"w") do |f|
   f.write(json)
+end
+
+File.open(File.expand_path("../../tmp/output.csv",__FILE__),"w") do |f|
+  f.write(csv)
 end
