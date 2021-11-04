@@ -126,7 +126,7 @@ class Cyllabus
   def to_csv
     csv = ""
     @lectures.each_with_index do |e,i|
-      csv << "#{e.id}, #{e.name}, #{e.instructors}, #{e.term}, #{e.grade}, #{e.required_time}, #{e.rooms}, #{e.type}, #{e.continuous}, #{e.period}\n"
+      csv << "#{e.id}, #{e.name}, #{e.instructors.inject{|result, item| result + " " + item}}, #{e.term}, #{e.grade}, #{e.required_time}, #{e.rooms.inject{|result, item| result + " " + item}}, #{e.type}, #{e.continuous}, #{e.period}\n"
     end
     csv
   end
